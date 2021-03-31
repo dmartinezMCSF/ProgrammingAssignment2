@@ -4,18 +4,39 @@
 ## Write a short comment describing this function
 
 makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
-  set <- function(y) {
-    x <<- y
-    inv <<- NULL
+  
+  
+  ## Initialize the inverse property
+  i <- NULL
+  
+  ## Method to set the matrix
+  set <- function( matrix ) {
+    m <<- matrix
+    i <<- NULL
   }
-  get <- function() x
-  setInverse <- function() inv <<- solve(x) #calculate the inverse
-  getInverse <- function() inv
-  list(set = set,
-       get = get,
+  
+  ## Method the get the matrix
+  get <- function() {
+    ## Return the matrix
+    m
+  }
+  
+  ## Method to set the inverse of the matrix
+  setInverse <- function(inverse) {
+    i <<- inverse
+  }
+  
+  ## Method to get the inverse of the matrix
+  getInverse <- function() {
+    ## Return the inverse property
+    i
+  }
+  
+  ## Return a list of the methods
+  list(set = set, get = get,
        setInverse = setInverse,
        getInverse = getInverse)
+
 
 }
 
@@ -23,15 +44,25 @@ makeCacheMatrix <- function(x = matrix()) {
 ## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-  funs <- makeCacheMatrix()
-  funs$set(matrix(1:4, 2))
-  funs$get()
-  #     [,1] [,2]
-  #[1,]    1    3
-  #[2,]    2    4
-  funs$setInverse()
-  funs$getInverse()
-  #     [,1] [,2]
-  #[1,]   -2  1.5
-  #[2,]    1 -0.5
+  
+  m <- x$getInverse()
+  
+  
+  if( !is.null(m) ) {
+    message("getting cached data")
+    return(m)
+  }
+  
+  ## Get the matrix from our object
+  data <- x$get()
+  
+  ## Calculate the inverse using matrix multiplication
+  m <- solve(data) %*% data
+  
+  ## Set the inverse to the object
+  x$setInverse(m)
+  
+  ## Return the matrix
+  m
+   
 }
